@@ -11,8 +11,8 @@ import csv
 # 0: left 1: right 2: up 3: down
 
 def heuristic(x,y):
-    return((x[0] - y[0])**2 + (x[1]-y[1])**2)
-
+    return(abs(y[0] - x[0]) + abs(y[1]-x[1]))
+    #return ((y[0] - x[0])**2 + (y[1] - x[1])**2)
 
 
 def Greedy():
