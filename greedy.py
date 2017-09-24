@@ -21,15 +21,14 @@ def Greedy():
     print(start,goal)
     prev = [[[-1,-1] for x in range(columns)] for y in range(rows)]  # record all the history
     path = []
-    queue = [start]
-    queue = deque(queue)
-    frontier = []
+    heu_start = heuristic(start,goal)
+    frontier = [[start[0],start[1],heu_start]]
     steps = 0
-    while(len(queue)!=0):
-        node_now = queue.popleft()
+    while(len(frontier)!=0):
+        node_now = min(frontier, key=lambda t: t[2])
+        frontier.remove(node_now)
         x = node_now[0]
         y = node_now[1]
-        unavaiable[x][y] = 1
         if (x == goal[0] and y == goal[1]):
             print("solution found")
             pos_now = goal
@@ -56,23 +55,24 @@ def Greedy():
         if (unavaiable[x+1][y] == 0 and visited[x+1][y] == 0): # right
             heu = heuristic([x+1,y],goal)
             frontier.append([x+1,y,heu])
+            visited[x+1][y] = 1
             prev[x+1][y] = [x, y]
         if (unavaiable[x-1][y] == 0 and visited[x-1][y] == 0): # left
             heu = heuristic([x-1,y],goal)
             frontier.append([x-1,y,heu])
+            visited[x-1][y] = 1
             prev[x-1][y] = [x, y]
         if (unavaiable[x][y-1] == 0 and visited[x][y-1] == 0): # down
             heu = heuristic([x,y-1],goal)
             frontier.append([x,y-1,heu])
+            visited[x][y-1] = 1
             prev[x][y-1] = [x, y]
         if (unavaiable[x][y+1] == 0 and visited[x][y+1] == 0): # up
             heu = heuristic([x,y+1],goal)
             frontier.append([x,y+1,heu])
+            visited[x][y+1] = 1
             prev[x][y+1] = [x, y]
 
-        expand = min(frontier, key = lambda t: t[2])
-        queue.append(expand)
-        frontier.remove(expand)
         steps += 1
 
 def main():
