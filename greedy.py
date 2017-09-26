@@ -57,7 +57,7 @@ def Greedy():
             prev_right.append([x+1,y])
             frontier.append([x+1,y,heu,prev_right])
         if (unavaiable[x-1][y] == 0 and visited[x-1][y] == 0 and (steps+1 < mincost[x-1][y])): # left
-            mincost[x-11][y] = steps+1
+            mincost[x-1][y] = steps+1
             heu = heuristic([x-1,y],goal)
             prev_left = list(prev)
             prev_left.append([x-1,y])
