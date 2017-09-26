@@ -18,7 +18,7 @@ def heuristic(x,y):
 def Greedy():
     import read_maze
     maze,visited,unavaiable,start,goal,rows,columns = read_maze.generate_maze()
-    goal = goal[0]
+ #   goal = goal[0]
     print(start,goal)
     prev = [start]  # record all the history
     expanded = 0
