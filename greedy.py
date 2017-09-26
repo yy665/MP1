@@ -18,62 +18,66 @@ def heuristic(x,y):
 def Greedy():
     import read_maze
     maze,visited,unavaiable,start,goal,rows,columns = read_maze.generate_maze()
- #   goal = goal[0]
+    goal = goal[0]
     print(start,goal)
-    prev = [start]  # record all the history
+    prev = [[[-1, -1] for x in range(columns)] for y in range(rows)]  # record all the history
+    path = []
+    steps = 1
     expanded = 0
     heu_start = heuristic(start,goal)
     mincost = [[9999999 for x in range(columns)] for y in range(rows)]
-    frontier = [[start[0],start[1],heu_start,prev]]
+    frontier = [[start[0],start[1],heu_start,steps]]
     while(len(frontier)!=0):
-        steps = len(prev)
         node_now = min(frontier, key=lambda t: t[2])
+        steps = node_now[3]
+        print(steps)
         frontier.remove(node_now)
         x = node_now[0]
         y = node_now[1]
-        prev = node_now[3]
         visited[x][y] = 1
         if (x == goal[0] and y == goal[1]):
             print("solution found")
+            pos_now = goal
+            while (pos_now != start):
+                path.append(pos_now)
 
-            print(prev)
-            length = len(prev)
+                pos_now = prev[pos_now[0]][pos_now[1]]
+                maze[pos_now[0]][pos_now[1]] = '.'
+            maze[start[0]][start[1]] = "P"
+            path.reverse()
+            print(path)
+            length = len(path)
             print("Total length of the path is " + str(length))
             print("Number of expanded nodes is " + str(expanded))
             # write it
-            for i in range(rows):
-                for j in range(columns):
-                    if [i,j] in prev:
-                        print(".", end="")
-                    else:
-                        print(maze[i][j], end="")
-                print("\n",end="")
+            with open('test_file.csv', 'w') as csvfile:
+                writer = csv.writer(csvfile)
+                for r in maze:
+                    r = ''.join(str(word) for word in r)
+                    print(r)
+                    writer.writerow(r)
             return
         # loop over all possible nodes
         if (unavaiable[x+1][y] == 0 and visited[x+1][y] == 0 and (steps+1 < mincost[x+1][y])): # right
             mincost[x+1][y] = steps+1
             heu = heuristic([x+1,y],goal)
-            prev_right = list(prev)
-            prev_right.append([x+1,y])
-            frontier.append([x+1,y,heu,prev_right])
+            prev[x+1][y] = [x,y]
+            frontier.append([x+1,y,heu,steps+1])
         if (unavaiable[x-1][y] == 0 and visited[x-1][y] == 0 and (steps+1 < mincost[x-1][y])): # left
             mincost[x-1][y] = steps+1
             heu = heuristic([x-1,y],goal)
-            prev_left = list(prev)
-            prev_left.append([x-1,y])
-            frontier.append([x-1,y,heu,prev_left])
+            prev[x-1][y] = [x,y]
+            frontier.append([x-1,y,heu,steps+1])
         if (unavaiable[x][y-1] == 0 and visited[x][y-1] == 0) and (steps+1 < mincost[x][y-1]): # down
             mincost[x][y-1] = steps+1
             heu = heuristic([x,y-1],goal)
-            prev_down = list(prev)
-            prev_down.append([x,y-1])
-            frontier.append([x,y-1,heu,prev_down])
+            prev[x][y-1] = [x,y]
+            frontier.append([x,y-1,heu,steps+1])
         if (unavaiable[x][y+1] == 0 and visited[x][y+1] == 0 and (steps+1 < mincost[x][y+1])): # up
             mincost[x][y+1] = steps+1
             heu = heuristic([x,y+1],goal)
-            prev_up = list(prev)
-            prev_up.append([x,y+1])
-            frontier.append([x,y+1,heu,prev_up])
+            prev[x][y+1] = [x,y]
+            frontier.append([x,y+1,heu,steps+1])
 
         expanded += 1
 
