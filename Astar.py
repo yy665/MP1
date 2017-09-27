@@ -9,7 +9,8 @@ def heuristic(x,y):
     return (abs(x[0]-y[0]) + abs(x[1]-y[1]))
 
 def Astar():
-    maze,visited,unavaiable,start,goal,rows,columns = read_maze.generate_maze()
+    maze,visited,unavaiable,start,goals,rows,columns = read_maze.generate_maze()
+    goal = goals[0]
     pqueue = []
     steps = 0
     idx = 0
@@ -24,6 +25,7 @@ def Astar():
         y = path[-1][1]
         visited[x][y] = 1
         f_cost = len(path)
+        print(f_cost)
         if(len(pqueue)>maxexpands):
             maxexpands = len(pqueue)
 
@@ -82,13 +84,14 @@ def main():
     #printPath(path)
 
 def printPath(prevPosition,maze):
-    correctSteps = 0
+    correctSteps = len(prevPosition)
+    print(len(prevPosition))
     print("The solution is ")
     for i in range(len(maze)):
         for j in range(len(maze[0])):
             if [i,j] in prevPosition:
                 print(".", end="")
-                correctSteps += 1
+                #correctSteps += 1
             else:
                 print(maze[i][j], end="")
         print("\n",end="")

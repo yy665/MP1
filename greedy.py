@@ -27,6 +27,7 @@ def Greedy():
     heu_start = heuristic(start,goal)
     mincost = [[9999999 for x in range(columns)] for y in range(rows)]
     frontier = [[start[0],start[1],heu_start,steps]]
+    explored = 0
     while(len(frontier)!=0):
         node_now = min(frontier, key=lambda t: t[2])
         steps = node_now[3]
@@ -49,6 +50,8 @@ def Greedy():
             length = len(path)
             print("Total length of the path is " + str(length))
             print("Number of expanded nodes is " + str(expanded))
+            print("Number of explored nodes is " + str(explored))
+
             # write it
             with open('test_file.csv', 'w') as csvfile:
                 writer = csv.writer(csvfile)
@@ -63,23 +66,29 @@ def Greedy():
             heu = heuristic([x+1,y],goal)
             prev[x+1][y] = [x,y]
             frontier.append([x+1,y,heu,steps+1])
+            expanded += 1
+
         if (unavaiable[x-1][y] == 0 and visited[x-1][y] == 0 and (steps+1 < mincost[x-1][y])): # left
             mincost[x-1][y] = steps+1
             heu = heuristic([x-1,y],goal)
             prev[x-1][y] = [x,y]
             frontier.append([x-1,y,heu,steps+1])
+            expanded += 1
+
         if (unavaiable[x][y-1] == 0 and visited[x][y-1] == 0) and (steps+1 < mincost[x][y-1]): # down
             mincost[x][y-1] = steps+1
             heu = heuristic([x,y-1],goal)
             prev[x][y-1] = [x,y]
             frontier.append([x,y-1,heu,steps+1])
+            expanded += 1
+
         if (unavaiable[x][y+1] == 0 and visited[x][y+1] == 0 and (steps+1 < mincost[x][y+1])): # up
             mincost[x][y+1] = steps+1
             heu = heuristic([x,y+1],goal)
             prev[x][y+1] = [x,y]
             frontier.append([x,y+1,heu,steps+1])
-
-        expanded += 1
+            expanded += 1
+        explored += 1
 
 def main():
     Greedy()
