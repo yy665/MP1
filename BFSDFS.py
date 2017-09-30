@@ -1,10 +1,10 @@
 from collections import deque
-from scipy.sparse import csr_matrix
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import mpmath as math
 import read_maze
 import Astar3
+import csv
 
 def BFS():
     queue = []
