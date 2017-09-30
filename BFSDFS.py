@@ -75,7 +75,7 @@ def BFS():
                     prev[x+1][y][collected_int_temp] = [x,y,collected_int]
                     queue.append([x+1,y,node_now,steps+1,collected_temp])
             else:
-                if (steps + 1 < mincost[x+1][y ][collected_int]) : # right
+                if (steps+1< mincost[x+1][y][collected_int]) : # right
                     mincost[x + 1][y][collected_int] = steps + 1
                     prev[x+1][y][collected_int] = [x,y,collected_int]
                     queue.append([x+1,y,node_now,steps+1,collected])
