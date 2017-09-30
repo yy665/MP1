@@ -8,9 +8,9 @@ import read_maze
 def heuristic(x,y):
     return (abs(x[0]-y[0]) + abs(x[1]-y[1]))
 
-def Astar():
-    maze,visited,unavaiable,start,goals,rows,columns = read_maze.generate_maze()
-    goal = goals[0]
+def Astar(maze,visited,unavaiable,start,goal,rows,columns):
+    #maze,visited,unavaiable,start,goals,rows,columns = read_maze.generate_maze()
+    #goal = goals[0]
     pqueue = []
     steps = 0
     idx = 0
