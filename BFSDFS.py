@@ -1,18 +1,28 @@
 from collections import deque
-
+from scipy.sparse import csr_matrix
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+import mpmath as math
+import read_maze
+import Astar4
 
 def BFS():
     queue = []
     queue = deque(queue)
     queue.append(read_maze.start)
+    points = len(goals)
+    prev = [[[-1, -1] for x in range(2**points)] for y in range(points+1)]  # record all the history
     steps = 0
     everyStep = 0
-    row = read_maze.start[0]
-    col = read_maze.start[1]
-    unavaiable = read_maze.unavaiable
-    visited = read_maze.visited
+    collected = '0' * points # collected is a vector that contains which dots have been collected
+    path = []
 
     prevPosition = []
+
+
+    (csgraph,maze,visited,unavaiable,start,goals,rows,columns) = Astar4.setupGraph()
+    row = start[0]
+    col = start[1]
 
     while(len(queue) != 0):
         if unavaiable[row+1][col] == 0 and visited[row+1][col] == 0: #up  no wall and unvisit
@@ -32,7 +42,8 @@ def BFS():
                 printPath(prevPosition)
                 print("Number of nodes expanded by the search algorithm is " + everyStep)
 
-            queue.append([row,col+1])
+            queue.append([row
+            ,col+1])
         if unavaiable[row-1][col] == 0 and visited[row-1][col] == 0: #down
             visited[row-1][col] = 1
             prevPosition.append(queue.front())
