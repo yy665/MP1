@@ -74,7 +74,7 @@ def Astar3():
     points = len(goals)
     #print(points)
     #print(start,goals)
-    prev = [[[[-1, -1, -1] for x in range(2**points)] for y in range(columns)]  for z in range(rows)] # record all the history
+    prev = [[[-1, -1] for x in range(2**points)] for y in range(points+1)]  # record all the history
     collected = '0' * points # collected is a vector that contains which dots have been collected
     #print(collected)
     #collected_int = int(collected,2) # collected_int is the index of what the 3rd dimension value is
@@ -84,7 +84,7 @@ def Astar3():
     #goal = goals[0]
     #print(goals)
     heu_start = heuristic(start,goals,csgraph,maze,visited,unavaiable,rows,columns)
-    mincost = [[[9999999 for x in range(2**points)] for y in range(columns)] for z in range(rows)]
+    mincost = [[9999999 for x in range(2**points)] for y in range(points+1)]
     frontier = [[start[0],start[1],heu_start,steps,collected]]
     while(len(frontier)!=0):
         node_now = min(frontier, key=lambda t: t[2])
@@ -97,7 +97,7 @@ def Astar3():
         collected = node_now[4]
         collected_int = int(collected,2)
         print(collected)
-        visited[x][y][collected_int] = 1
+        #visited[x][y][collected_int] = 1
         goal_here = copy.deepcopy(goals)
         #print(goal_here)
         for i in range(points):
@@ -236,7 +236,8 @@ def Astar():
     points = len(goals)
     print(points)
     print(start,goals)
-    prev = [[[[-1, -1, -1] for x in range(2**points)] for y in range(columns)]  for z in range(rows)] # record all the history
+    prev = [[[-1, -1] for x in range(2**points)] for y in range(points+1)]   # record all the history
+    print("prev done")
     collected = '0' * points # collected is a vector that contains which dots have been collected
     #print(collected)
     #collected_int = int(collected,2) # collected_int is the index of what the 3rd dimension value is
@@ -247,7 +248,9 @@ def Astar():
     #goal = goals[0]
     #print(goals)
     heu_start = heuristic(start,goals,csgraph,maze,visited,unavaiable,rows,columns)
-    mincost = [[[9999999 for x in range(2**points)] for y in range(columns)] for z in range(rows)]
+    print("heu done")
+    mincost = [[9999999 for x in range(2**points)] for y in range(points+1)]
+    print("min done")
     frontier = [[start[0],start[1],heu_start,cost,collected]]
     print("start")
     while(len(frontier)!=0):
@@ -258,11 +261,11 @@ def Astar():
         frontier.remove(node_now)
         x = node_now[0]
         y = node_now[1]
-        print(x,y)
+        #print(x,y)
         collected = node_now[4]
         collected_int = int(collected,2)
         print(collected)
-        visited[x][y][collected_int] = 1
+        #visited[x][y][collected_int] = 1
         goal_here = copy.deepcopy(goals)
         #print(goal_here)
         for i in range(points):
@@ -318,10 +321,14 @@ def Astar():
                 collected_int_temp = int(collected_temp,2)
                 goal_temp = copy.deepcopy(goal_here)
                 goal_temp[idx] = [-2,-2]
-                if (cost_temp < mincost[want[0]][want[1]][collected_int_temp]): # right
-                    mincost[want[0]][want[1]][collected_int_temp] = cost_temp
+                if (cost_temp < mincost[idx][collected_int_temp]): # right
+                    mincost[idx][collected_int_temp] = cost_temp
                     heu = heuristic(want,goal_temp,csgraph,maze,visited,unavaiable,rows,columns)
-                    prev[want[0]][want[1]][collected_int_temp] = [x,y,collected_int]
+                    if [x,y] == start:
+                        prev[idx][collected_int_temp] = [points,collected_int]
+                    else:
+                        idxhere = goals.index([x,y])
+                        prev[idx][collected_int_temp] = [idxhere, collected_int]
                     frontier.append([want[0],want[1],heu+cost_temp,cost_temp,collected_temp])
 
         expanded += 1

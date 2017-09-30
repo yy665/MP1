@@ -26,6 +26,7 @@ def generate_maze():
                 start = [i,j]
             if maze[i][j] == '.':
                 goal.append([i,j])
-    visited = [[[0 for x in range(2**len(goal))] for y in range(columns)]  for z in range(rows)] # visited = 1 means the place has been visited
+    #visited = [[[0 for x in range(2**len(goal))] for y in range(columns)]  for z in range(rows)] # visited = 1 means the place has been visited
+    visited = []
     #visited = [[0 for x in range(columns)] for y in range(rows)]
     return maze,visited,unavaiable,start,goal,rows,columns
