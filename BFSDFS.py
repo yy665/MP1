@@ -5,7 +5,7 @@ import mpmath as math
 import read_maze
 import Astar3
 import csv
-
+import copy
 def BFS():
     queue = []
     queue = deque(queue)
@@ -291,10 +291,6 @@ def printPath(prevPosition):
         print("\n")
     print("The path cost of the solution is " + correctSteps)
 '''
-
-if __name__== "__main__":
-  main()
-
 def main():
     while(True):
         In = input("DFS or BFS?")
@@ -304,3 +300,6 @@ def main():
         elif In == "BFS":
             BFS()
             break
+
+if __name__== "__main__":
+  main()
