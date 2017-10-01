@@ -4,45 +4,90 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from collections import deque
 import csv
+import Astar3
+import read_maze
+import copy
+import csv
 
 
 
 # direction definition:
 # 0: left 1: right 2: up 3: down
 
-def heuristic(x,y):
-    return(abs(y[0] - x[0]) + abs(y[1]-x[1]))
-    #return ((y[0] - x[0])**2 + (y[1] - x[1])**2)
+def heuristic(x,goals):
+    import itertools
+    import copy
+    from scipy.sparse import csr_matrix
+    from scipy.sparse.csgraph import minimum_spanning_tree
+    allpoints = copy.deepcopy(goals)
+    allpoints.append(x)
+    allpoints = [a for a in allpoints if a!= [-2,-2]]
+    N = len(allpoints)
+    csgraph =[[0 for x in range(N)] for y in range(N)]
+    for first, second in itertools.combinations(allpoints, 2):
+        N1 = allpoints.index(first)
+        N2 = allpoints.index(second)
+        dist = (abs(first[0] - second[0]) + abs(first[1]-second[1]))
+        csgraph[N1][N2] = dist
+    tree = minimum_spanning_tree(csgraph)
+    tree = tree.toarray().astype(int)
+
+    sum = 0
+    for row in range(len(tree)):
+        for col in range(len(tree[0])):
+            sum = sum + tree[row][col]
+    #print(sum)
+    return sum
+
 
 
 def Greedy():
-    import read_maze
-    maze,visited,unavaiable,start,goal,rows,columns = read_maze.generate_maze()
-    goal = goal[0]
+    maze,visited,unavaiable,start,goals,rows,columns = read_maze.generate_maze()
+    points = len(goals)
+    prev = [[[[-1, -1, -1] for x in range(2**points)] for y in range(columns)]  for z in range(rows)] # record all the history
+    collected = '0' * points # collected is a vector that contains which dots have been collected
+    collected_int = int(collected,2) # collected_int is the index of what the 3rd dimension value is
+    goal = goals[0]
     print(start,goal)
-    prev = [[[-1, -1] for x in range(columns)] for y in range(rows)]  # record all the history
     path = []
     steps = 1
     expanded = 0
-    heu_start = heuristic(start,goal)
-    mincost = [[9999999 for x in range(columns)] for y in range(rows)]
-    frontier = [[start[0],start[1],heu_start,steps]]
+    heu_start = heuristic(start,goals)
+    #mincost = [[[9999999 for x in range(2**points)] for y in range(columns)] for z in range(rows)]
+    frontier = [[start[0],start[1],heu_start,steps,collected]]
     explored = 0
     while(len(frontier)!=0):
         node_now = min(frontier, key=lambda t: t[2])
+        #print(node_now)
         steps = node_now[3]
-        print(steps)
+        #print(steps)
         frontier.remove(node_now)
         x = node_now[0]
         y = node_now[1]
-        visited[x][y] = 1
-        if (x == goal[0] and y == goal[1]):
+        collected = node_now[4]
+        collected_int = int(collected,2)
+        #print(collected)
+        visited[x][y][collected_int] = 1
+        goal_here = copy.deepcopy(goals)
+        heu_now = heuristic([x,y],goals)
+        #print(goal_here)
+        for i in range(points):
+            if collected[i] == '1':
+                goal_here[i] = [-2,-2]
+        if ([x,y] in goal_here):
+            i = goal_here.index([x,y])
+            collected[i] = '1'
+        if collected == '1'*points:
             print("solution found")
-            pos_now = goal
-            while (pos_now != start):
+            print(expanded)
+            pos_now = [x,y]
+         #   print(pos_now)
+         #   print(collected)
+            while ([pos_now,collected_int] != [start,0] ):
                 path.append(pos_now)
-
-                pos_now = prev[pos_now[0]][pos_now[1]]
+                print(pos_now)
+                (pos_now,collected_int) = ([prev[pos_now[0]][pos_now[1]][collected_int][0],prev[pos_now[0]][pos_now[1]][collected_int][1]], prev[pos_now[0]][pos_now[1]][collected_int][2])
+                #print(pos_now)
                 maze[pos_now[0]][pos_now[1]] = '.'
             maze[start[0]][start[1]] = "P"
             path.reverse()
@@ -50,8 +95,6 @@ def Greedy():
             length = len(path)
             print("Total length of the path is " + str(length))
             print("Number of expanded nodes is " + str(expanded))
-            print("Number of explored nodes is " + str(explored))
-
             # write it
             with open('test_file.csv', 'w') as csvfile:
                 writer = csv.writer(csvfile)
@@ -61,34 +104,131 @@ def Greedy():
                     writer.writerow(r)
             return
         # loop over all possible nodes
-        if (unavaiable[x+1][y] == 0 and visited[x+1][y] == 0 and (steps+1 < mincost[x+1][y])): # right
-            mincost[x+1][y] = steps+1
-            heu = heuristic([x+1,y],goal)
-            prev[x+1][y] = [x,y]
-            frontier.append([x+1,y,heu,steps+1])
-            expanded += 1
+        if (unavaiable[x+1][y] == 0):
+            heu = heuristic([x + 1, y], goal_here)
+            if [x + 1, y] in goal_here:
+                idx = goal_here.index([x+1,y])
+                collected_temp = copy.deepcopy(collected)
+                temp = list(collected_temp)
+                temp[idx] = '1'
+                collected_temp = "".join(temp)
+                collected_int_temp = int(collected_temp,2)
+                goal_temp = copy.deepcopy(goal_here)
+                goal_temp[idx] = [-2,-2]
+                #if (steps + 1 < mincost[x+1][y][collected_int_temp]): # right
+                    #mincost[x+1][y][collected_int_temp] = steps+1
+                heu = heuristic([x+1,y],goal_temp)
+                if prev[x+1][y][collected_int_temp] != [-1,-1,-1]:
+                    prev[x+1][y][collected_int_temp] = [x,y,collected_int]
+                frontier.append([x+1,y,heu,steps+1,collected_temp])
 
-        if (unavaiable[x-1][y] == 0 and visited[x-1][y] == 0 and (steps+1 < mincost[x-1][y])): # left
-            mincost[x-1][y] = steps+1
-            heu = heuristic([x-1,y],goal)
-            prev[x-1][y] = [x,y]
-            frontier.append([x-1,y,heu,steps+1])
-            expanded += 1
+            else:
+                #if (steps + 1 < mincost[x+1][y ][collected_int]) : # right
+                    #mincost[x + 1][y][collected_int] = steps + 1
+                if prev[x+1][y][collected_int] != [-1,-1,-1]:
+                    prev[x+1][y][collected_int] = [x,y,collected_int]
+                frontier.append([x+1,y,heu,steps+1,collected])
 
-        if (unavaiable[x][y-1] == 0 and visited[x][y-1] == 0) and (steps+1 < mincost[x][y-1]): # down
-            mincost[x][y-1] = steps+1
-            heu = heuristic([x,y-1],goal)
-            prev[x][y-1] = [x,y]
-            frontier.append([x,y-1,heu,steps+1])
-            expanded += 1
+        if (unavaiable[x-1][y] == 0):
+            heu = heuristic([x-1,y],goal_temp)
+            if [x - 1, y] in goal_here:
+                idx = goal_here.index([x-1,y])
+                collected_temp = copy.deepcopy(collected)
+                temp = list(collected_temp)
+                temp[idx] = '1'
+                collected_temp = "".join(temp)
+                collected_int_temp = int(collected_temp,2)
+                goal_temp = copy.deepcopy(goal_here)
+                goal_temp[idx] = [-2, -2]
+                #if (heu < heu_now): # left
+                    #mincost[x-1][y][collected_int_temp] = steps+1
+                heu = heuristic([x-1,y],goal_temp)
+                if prev[x-1][y][collected_int_temp] != [-1,-1,-1]:
+                    prev[x-1][y][collected_int_temp] = [x,y,collected_int]
+                frontier.append([x-1,y,heu,steps+1,collected_temp])
 
-        if (unavaiable[x][y+1] == 0 and visited[x][y+1] == 0 and (steps+1 < mincost[x][y+1])): # up
-            mincost[x][y+1] = steps+1
-            heu = heuristic([x,y+1],goal)
-            prev[x][y+1] = [x,y]
-            frontier.append([x,y+1,heu,steps+1])
-            expanded += 1
+            else:
+                #if (heu < heu_now) : # left
+                    #mincost[x - 1][y][collected_int] = steps + 1
+                if prev[x-1][y][collected_int] != [-1,-1,-1]:
+                    prev[x-1][y][collected_int] = [x,y,collected_int]
+                frontier.append([x-1,y,heu,steps+1,collected])
+
+        if (unavaiable[x][y-1] == 0):
+            heu = heuristic([x, y-1], goal_temp)
+            if [x, y-1] in goal_here:
+                idx = goal_here.index([x, y-1])
+                collected_temp = copy.deepcopy(collected)
+                temp = list(collected_temp)
+                temp[idx] = '1'
+                collected_temp = "".join(temp)
+                collected_int_temp = int(collected_temp,2)
+                goal_temp = copy.deepcopy(goal_here)
+                goal_temp[idx] = [-2, -2]
+                #if (heu < heu_now):  # down
+                    #mincost[x][y-1][collected_int_temp] = steps + 1
+                heu = heuristic([x, y-1], goal_temp)
+                if prev[x][y-1][collected_int_temp] != [-1,-1,-1]:
+                    prev[x][y-1][collected_int_temp] = [x, y, collected_int]
+                frontier.append([x, y-1, heu, steps + 1, collected_temp])
+
+            else:
+                #if (heu < heu_now):  # down
+                    #mincost[x][y-1][collected_int] = steps + 1
+                if prev[x][y-1][collected_int] != [-1,-1,-1]:
+                    prev[x][y-1][collected_int] = [x, y, collected_int]
+                frontier.append([x, y-1, heu, steps + 1, collected])
+
+        if (unavaiable[x][y +1] == 0):
+            heu = heuristic([x, y + 1], goal_here)
+            if [x, y + 1] in goal_here:
+                idx = goal_here.index([x, y + 1])
+                collected_temp = copy.deepcopy(collected)
+                temp = list(collected_temp)
+                #print(temp)
+                temp[idx] = '1'
+                collected_temp = "".join(temp)
+                collected_int_temp = int(collected_temp,2)
+                goal_temp = copy.deepcopy(goal_here)
+                goal_temp[idx] = [-2, -2]
+                #if (heu < heu_now):  # up
+                    #mincost[x][y + 1][collected_int_temp] = steps + 1
+                heu = heuristic([x, y + 1], goal_temp)
+                if prev[x][y+1][collected_int_temp] != [-1,-1,-1]:
+                    prev[x][y + 1][collected_int_temp] = [x, y, collected_int]
+                frontier.append([x, y + 1, heu, steps + 1, collected_temp])
+
+            else:
+                #if (heu < heu_now):  # up
+                    #mincost[x][y + 1][collected_int] = steps + 1
+                if prev[x][y+1][collected_int] != [-1,-1,-1]:
+                    prev[x][y + 1][collected_int] = [x, y, collected_int]
+                frontier.append([x, y + 1, heu, steps + 1, collected])
+
+        expanded += 1
         explored += 1
+
+def setupGraph ():
+    import itertools
+    import copy
+    import read_maze
+    maze, visited, unavaiable, start, goal, rows, columns = read_maze.generate_maze()
+    goal.append(start)
+    print(len(goal))
+    paths = []
+    costs = []
+    pair = []
+    csgraph = [[0 for x in range(N)] for y in range(N)]
+    for first, second in itertools.combinations(goal,2):
+        visited1= copy.deepcopy(visited)
+        maze1 = copy.deepcopy(maze)
+        unavaiable1 = copy.deepcopy(unavaiable)
+        (maze1,cost,curridx,path) = Astar3(maze1,visited1,unavaiable1,first,second,rows,columns)
+        paths.append(path)
+        pair.append([first,second])
+        costs.append(cost)
+    print(len(costs))
+    return(costs)
 
 def main():
     Greedy()
