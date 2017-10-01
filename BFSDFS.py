@@ -5,7 +5,10 @@ import read_maze
 import Astar3
 import csv
 import copy
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7f5766811951772cfc02781f6f6f21e425ad6cab
 def BFS():
     queue = []
     queue = deque(queue)
@@ -75,7 +78,7 @@ def BFS():
                     prev[x+1][y][collected_int_temp] = [x,y,collected_int]
                     queue.append([x+1,y,steps+1,collected_temp])
             else:
-                if (steps + 1 < mincost[x+1][y ][collected_int]) : # right
+                if (steps+1< mincost[x+1][y][collected_int]) : # right
                     mincost[x + 1][y][collected_int] = steps + 1
                     prev[x+1][y][collected_int] = [x,y,collected_int]
                     queue.append([x+1,y,steps+1,collected])
