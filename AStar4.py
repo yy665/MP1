@@ -96,7 +96,7 @@ def Astar3():
         y = node_now[1]
         collected = node_now[4]
         collected_int = int(collected,2)
-        print(collected)
+        #print(collected)
         #visited[x][y][collected_int] = 1
         goal_here = copy.deepcopy(goals)
         #print(goal_here)
