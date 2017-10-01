@@ -14,7 +14,7 @@ def mazeinput (maze,filename):
 
 def generate_maze():
     maze =[]
-    mazeinput(maze,"mediumSearch.txt")
+    mazeinput(maze,"tinySearch.txt")
     [rows,columns] = np.shape(maze)
     unavaiable = [[0 for x in range(columns)] for y in range(rows)] # unavaible = 1 means there is a wall in that position
     goal = []
