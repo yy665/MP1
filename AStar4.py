@@ -48,7 +48,7 @@ def heuristic(x,goals,csgraph1,maze,visited,unavaiable,rows,columns):
         for col in range(len(tree[0])):
             sum = sum + tree[row][col]
     #print("sum" + str(sum))
-    return sum
+    return 100*sum
 
 
 def heuristic4(x,goals,maze, visited, unavaiable, rows, columns):
@@ -333,6 +333,115 @@ def Astar():
 
         expanded += 1
 
+def Astar_forbig():
+    import read_maze
+    import copy
+    (csgraph,pairs,costs,paths,maze,visited,unavaiable,start,goals,rows,columns) = setupGraph()
+
+    points = len(goals)
+    print(points)
+    print(start,goals)
+    prev = [-1   for y in range(points+1)]   # record all the history
+    print("prev done")
+    collected = '0' * points # collected is a vector that contains which dots have been collected
+    #print(collected)
+    #collected_int = int(collected,2) # collected_int is the index of what the 3rd dimension value is
+    path = []
+    steps = 1
+    expanded = 0
+    cost = 0
+    #goal = goals[0]
+    #print(goals)
+    heu_start = heuristic(start,goals,csgraph,maze,visited,unavaiable,rows,columns)
+    print("heu done")
+    #mincost = [[9999999 for x in range(2**points)] for y in range(points+1)]
+    print("min done")
+    frontier = [[start[0],start[1],heu_start,cost,collected]]
+    visited = []
+    print("start")
+    while(len(frontier)!=0):
+        node_now = min(frontier, key=lambda t: t[2])
+        #print(node_now)
+        cost = node_now[3]
+        #print(steps)
+        frontier.remove(node_now)
+        x = node_now[0]
+        y = node_now[1]
+        #print(x,y)
+        collected = node_now[4]
+        collected_int = int(collected,2)
+        print(collected)
+        visited.append([x,y,collected_int])
+        #visited[x][y][collected_int] = 1
+        goal_here = copy.deepcopy(goals)
+        #print(goal_here)
+        for i in range(points):
+            if collected[i] == '1':
+                goal_here[i] = [-2,-2]
+        if ([x,y] in goal_here):
+            i = goal_here.index([x,y])
+            collected[i] = '1'
+        if collected == '1'*points:
+            print("solution found")
+            print(expanded)
+            print(cost)
+            pos_now = [x,y]
+         #   print(pos_now)
+         #   print(collected)
+            while ([pos_now,collected_int] != [start,0] ):
+
+                path.append(pos_now)
+                (pos_now,collected_int) = ([prev[pos_now[0]][pos_now[1]][collected_int][0],prev[pos_now[0]][pos_now[1]][collected_int][1]], prev[pos_now[0]][pos_now[1]][collected_int][2])
+                #print(pos_now)
+                maze[pos_now[0]][pos_now[1]] = '.'
+            maze[start[0]][start[1]] = "P"
+            path.reverse()
+            print(path)
+            length = len(path)
+            print("Total length of the path is " + str(cost))
+            print("Number of expanded nodes is " + str(expanded))
+            # write it
+            with open('test_file.csv', 'w') as csvfile:
+                writer = csv.writer(csvfile)
+                for r in maze:
+                    r = ''.join(str(word) for word in r)
+                    print(r)
+                    writer.writerow(r)
+            return
+        # loop over all possible nodes
+        for want in goal_here:
+            if want != [-2,-2]:
+                idx = goal_here.index(want)
+                s = [x,y]
+                e = want
+                if [s, e] in pairs:
+                    pairidx = pairs.index([s, e])
+
+                else:
+                    pairidx = pairs.index([e, s])
+                cost_now = costs[pairidx]
+                cost_temp = cost + cost_now
+                collected_temp = copy.deepcopy(collected)
+                temp = list(collected_temp)
+                temp[idx] = '1'
+                collected_temp = "".join(temp)
+                collected_int_temp = int(collected_temp,2)
+                goal_temp = copy.deepcopy(goal_here)
+                goal_temp[idx] = [-2,-2]
+                #if (cost_temp < mincost[idx][collected_int_temp]): # right
+                    #mincost[idx][collected_int_temp] = cost_temp
+                if [want[0],want[1],collected_int_temp] not in visited:
+                    heu = heuristic(want,goal_temp,csgraph,maze,visited,unavaiable,rows,columns)
+                    if [x,y] == start:
+                        prev[idx] = points
+                    else:
+                        idxhere = goals.index([x,y])
+                        prev[idx] = idxhere
+                    frontier.append([want[0],want[1],heu+cost_temp,cost_temp,collected_temp])
+                    visited.append([want[0],want[1],collected_int_temp])
+
+        expanded += 1
+
 def Astar2(maze,visited,unavaiable,start,goal,rows,columns):
 
     #print(start,goal)
@@ -440,7 +549,7 @@ def setupGraph ():
 
 def main():
     # Astar3()
-    Astar()
+    Astar_forbig()
 
 if __name__ == "__main__":
     main()
