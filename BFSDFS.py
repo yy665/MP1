@@ -19,14 +19,14 @@ def BFS():
     steps = 1
     expanded = 0
     mincost = [[[9999999 for x in range(2**points)] for y in range(columns)] for z in range(rows)]
-    node_now = [start[0], start[1], None, steps, collected]
+    node_now = [start[0], start[1], steps, collected]
     queue.append(node_now)
     while(len(queue) != 0):
         node_now = queue.popleft()
         x = node_now[0]
         y = node_now[1]
-        steps = node_now[3]
-        collected = node_now[4]
+        steps = node_now[2]
+        collected = node_now[3]
         collected_int = int(collected,2)
         goal_here = copy.deepcopy(goals)
         for i in range(points):
@@ -73,12 +73,12 @@ def BFS():
                 if (steps + 1 < mincost[x+1][y][collected_int_temp]): # right
                     mincost[x+1][y][collected_int_temp] = steps+1
                     prev[x+1][y][collected_int_temp] = [x,y,collected_int]
-                    queue.append([x+1,y,node_now,steps+1,collected_temp])
+                    queue.append([x+1,y, steps+1,collected_temp])
             else:
                 if (steps+1< mincost[x+1][y][collected_int]) : # right
                     mincost[x + 1][y][collected_int] = steps + 1
                     prev[x+1][y][collected_int] = [x,y,collected_int]
-                    queue.append([x+1,y,node_now,steps+1,collected])
+                    queue.append([x+1,y, steps+1,collected])
 
         if unavaiable[x][y+1] == 0: #right
             if [x, y+1] in goal_here:
@@ -93,12 +93,12 @@ def BFS():
                 if (steps + 1 < mincost[x+1][y][collected_int_temp]): # right
                     mincost[x][y+1][collected_int_temp] = steps+1
                     prev[x][y+1][collected_int_temp] = [x,y,collected_int]
-                    queue.append([x,y+1,node_now,steps+1,collected_temp])
+                    queue.append([x,y+1, steps+1,collected_temp])
             else:
                 if (steps + 1 < mincost[x+1][y ][collected_int]) : # right
                     mincost[x][y+1][collected_int] = steps + 1
                     prev[x][y+1][collected_int] = [x,y,collected_int]
-                    queue.append([x,y+1,node_now,steps+1,collected])
+                    queue.append([x,y+1, steps+1,collected])
 
         if unavaiable[x-1][y] == 0: #down
             if [x-1, y] in goal_here:
@@ -113,12 +113,12 @@ def BFS():
                 if (steps + 1 < mincost[x+1][y][collected_int_temp]): # down
                     mincost[x-1][y][collected_int_temp] = steps+1
                     prev[x-1][y][collected_int_temp] = [x,y,collected_int]
-                    queue.append([x-1,y,node_now,steps+1,collected_temp])
+                    queue.append([x-1,y, steps+1,collected_temp])
             else:
                 if (steps + 1 < mincost[x+1][y ][collected_int]) : # down
                     mincost[x-1][y][collected_int] = steps + 1
                     prev[x-1][y][collected_int] = [x,y,collected_int]
-                    queue.append([x-1,y,node_now,steps+1,collected])
+                    queue.append([x-1,y, steps+1,collected])
 
         if unavaiable[x][y-1] == 0: #left
             if [x, y-1] in goal_here:
@@ -133,12 +133,12 @@ def BFS():
                 if (steps + 1 < mincost[x+1][y][collected_int_temp]): # down
                     mincost[x][y-1][collected_int_temp] = steps+1
                     prev[x][y-1][collected_int_temp] = [x,y,collected_int]
-                    queue.append([x,y-1,node_now,steps+1,collected_temp])
+                    queue.append([x,y-1, steps+1,collected_temp])
             else:
                 if (steps + 1 < mincost[x+1][y ][collected_int]) : # down
                     mincost[x][y-1][collected_int] = steps + 1
                     prev[x][y-1][collected_int] = [x,y,collected_int]
-                    queue.append([x,y-1,node_now,steps+1,collected])
+                    queue.append([x,y-1, steps+1,collected])
 
         expanded += 1
 
@@ -160,8 +160,8 @@ def DFS():
         node_now = stack.pop()
         x = node_now[0]
         y = node_now[1]
-        steps = node_now[3]
-        collected = node_now[4]
+        steps = node_now[2]
+        collected = node_now[3]
         collected_int = int(collected,2)
         goal_here = copy.deepcopy(goals)
         for i in range(points):
@@ -208,12 +208,12 @@ def DFS():
                 if (steps + 1 < mincost[x+1][y][collected_int_temp]): # right
                     mincost[x+1][y][collected_int_temp] = steps+1
                     prev[x+1][y][collected_int_temp] = [x,y,collected_int]
-                    stack.append([x+1,y,node_now,steps+1,collected_temp])
+                    stack.append([x+1,y, steps+1,collected_temp])
             else:
                 if (steps + 1 < mincost[x+1][y ][collected_int]) : # right
                     mincost[x + 1][y][collected_int] = steps + 1
                     prev[x+1][y][collected_int] = [x,y,collected_int]
-                    stack.append([x+1,y,node_now,steps+1,collected])
+                    stack.append([x+1,y, steps+1,collected])
 
         if unavaiable[x][y+1] == 0: #right
             if [x, y+1] in goal_here:
@@ -228,12 +228,12 @@ def DFS():
                 if (steps + 1 < mincost[x+1][y][collected_int_temp]): # right
                     mincost[x][y+1][collected_int_temp] = steps+1
                     prev[x][y+1][collected_int_temp] = [x,y,collected_int]
-                    stack.append([x,y+1,node_now,steps+1,collected_temp])
+                    stack.append([x,y+1, steps+1,collected_temp])
             else:
                 if (steps + 1 < mincost[x+1][y ][collected_int]) : # right
                     mincost[x][y+1][collected_int] = steps + 1
                     prev[x][y+1][collected_int] = [x,y,collected_int]
-                    stack.append([x,y+1,node_now,steps+1,collected])
+                    stack.append([x,y+1, steps+1,collected])
 
         if unavaiable[x-1][y] == 0: #down
             if [x-1, y] in goal_here:
@@ -248,12 +248,12 @@ def DFS():
                 if (steps + 1 < mincost[x+1][y][collected_int_temp]): # down
                     mincost[x-1][y][collected_int_temp] = steps+1
                     prev[x-1][y][collected_int_temp] = [x,y,collected_int]
-                    stack.append([x-1,y,node_now,steps+1,collected_temp])
+                    stack.append([x-1,y, steps+1,collected_temp])
             else:
                 if (steps + 1 < mincost[x+1][y ][collected_int]) : # down
                     mincost[x-1][y][collected_int] = steps + 1
                     prev[x-1][y][collected_int] = [x,y,collected_int]
-                    stack.append([x-1,y,node_now,steps+1,collected])
+                    stack.append([x-1,y, steps+1,collected])
 
         if unavaiable[x][y-1] == 0: #left
             if [x, y-1] in goal_here:
@@ -268,38 +268,22 @@ def DFS():
                 if (steps + 1 < mincost[x+1][y][collected_int_temp]): # down
                     mincost[x][y-1][collected_int_temp] = steps+1
                     prev[x][y-1][collected_int_temp] = [x,y,collected_int]
-                    stack.append([x,y-1,node_now,steps+1,collected_temp])
+                    stack.append([x,y-1, steps+1,collected_temp])
             else:
                 if (steps + 1 < mincost[x+1][y ][collected_int]) : # down
                     mincost[x][y-1][collected_int] = steps + 1
                     prev[x][y-1][collected_int] = [x,y,collected_int]
-                    stack.append([x,y-1,node_now,steps+1,collected])
+                    stack.append([x,y-1, steps+1,collected])
 
         expanded += 1
 
-'''
-def printPath(prevPosition):
-    correctSteps = 0
-    print("The solution is ")
-    for i in range(len(read_maze.maze)):
-        for j in range(len(read_maze.maze[0])):
-            if [i,j] in prevPosition:
-                print(".", end="")
-                correctSteps += 1
-            else:
-                print(maze[i][j], end="")
-        print("\n")
-    print("The path cost of the solution is " + correctSteps)
-'''
+
 def main():
-    while(True):
         In = input("DFS or BFS?")
         if In == "DFS":
             DFS()
-            break
-        elif In == "BFS":
+        else:
             BFS()
-            break
 
 if __name__== "__main__":
   main()
