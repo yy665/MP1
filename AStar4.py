@@ -48,7 +48,7 @@ def heuristic(x,goals,csgraph1,maze,visited,unavaiable,rows,columns):
         for col in range(len(tree[0])):
             sum = sum + tree[row][col]
     #print("sum" + str(sum))
-    return 100*sum
+    return sum
 
 
 def heuristic4(x,goals,maze, visited, unavaiable, rows, columns):
@@ -281,15 +281,20 @@ def Astar():
             pos_now = [x,y]
          #   print(pos_now)
          #   print(collected)
-            while ([pos_now,collected_int] != [start,0] ):
-
-                path.append(pos_now)
-                (pos_now,collected_int) = ([prev[pos_now[0]][pos_now[1]][collected_int][0],prev[pos_now[0]][pos_now[1]][collected_int][1]], prev[pos_now[0]][pos_now[1]][collected_int][2])
-                #print(pos_now)
-                maze[pos_now[0]][pos_now[1]] = '.'
-            maze[start[0]][start[1]] = "P"
-            path.reverse()
-            print(path)
+         #    order = []
+         #    idx_ = goals.index(pos_now)
+         #    while (collected_int != 0):
+         #        order.append(idx)
+         #        (idx, collected_int) = (prev[idx][collected_int])
+         #        # print(pos_now)
+         #        # maze[pos_now[0]][pos_now[1]] = '.'
+         #    # maze[start[0]][start[1]] = "P"
+         #    order.reverse()
+         #    print(order)
+         #    length = len(path)
+         #    print("Total length of the path is " + str(cost))
+         #    print("Number of expanded nodes is " + str(expanded))
+         #    print(path)
             length = len(path)
             print("Total length of the path is " + str(cost))
             print("Number of expanded nodes is " + str(expanded))
