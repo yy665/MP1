@@ -110,15 +110,17 @@ def Astar3():
             print("solution found")
             print(expanded)
             pos_now = [x,y]
+            goalnames = ['0','1','2','3','4','5','6','7','8','9']
+            goalnames.extend(['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t'])
+            goalnames.extend(['u','v','w','x','y','z'])
+            goalnames.extend(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W'])
+            goalnames.extend(['X','Y','Z'])
          #   print(pos_now)
          #   print(collected)
-            while ([pos_now,collected_int] != [start,0] ):
-
-                path.append(pos_now)
-                (pos_now,collected_int) = ([prev[pos_now[0]][pos_now[1]][collected_int][0],prev[pos_now[0]][pos_now[1]][collected_int][1]], prev[pos_now[0]][pos_now[1]][collected_int][2])
-                #print(pos_now)
-                maze[pos_now[0]][pos_now[1]] = '.'
-            maze[start[0]][start[1]] = "P"
+            for goalcounter in range(0,points):
+                maze[pos_now[0]][pos_now[1]] = goalnames[points-1-goalcounter]
+                pos_now = [prev[pos_now[0]][pos_now[1]][0],prev[pos_now[0]][pos_now[1]][1]]
+            maze[start[0]][start[1]] = 'P'
             path.reverse()
             print(path)
             length = len(path)
@@ -253,6 +255,7 @@ def Astar():
     print("min done")
     frontier = [[start[0],start[1],heu_start,cost,collected]]
     print("start")
+    foundpath = []
     while(len(frontier)!=0):
         node_now = min(frontier, key=lambda t: t[2])
         #print(node_now)
@@ -279,15 +282,24 @@ def Astar():
             print(expanded)
             print(cost)
             pos_now = [x,y]
+            goalnames = ['0','1','2','3','4','5','6','7','8','9']
+            goalnames.extend(['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t'])
+            goalnames.extend(['u','v','w','x','y','z'])
+            goalnames.extend(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W'])
+            goalnames.extend(['X','Y','Z'])
          #   print(pos_now)
          #   print(collected)
-            while ([pos_now,collected_int] != [start,0] ):
-
-                path.append(pos_now)
-                (pos_now,collected_int) = ([prev[pos_now[0]][pos_now[1]][collected_int][0],prev[pos_now[0]][pos_now[1]][collected_int][1]], prev[pos_now[0]][pos_now[1]][collected_int][2])
-                #print(pos_now)
-                maze[pos_now[0]][pos_now[1]] = '.'
-            maze[start[0]][start[1]] = "P"
+            goalnames = goalnames[:points]
+            goalnames.reverse()
+            foundpath = []
+            idx = goals.index(pos_now)
+            goalname = iter(goalnames)
+            while collected_int != 0:
+                foundpath.append(idx)
+                maze[goals[idx][0]][goals[idx][1]] = next(goalname)
+                (idx,collected_int) = (prev[idx][collected_int])
+            foundpath.reverse()
+            maze[start[0]][start[1]] = 'P'
             path.reverse()
             print(path)
             length = len(path)
