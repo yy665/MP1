@@ -4,7 +4,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from collections import deque
 import csv
-import Astar3
 import read_maze
 import copy
 import csv
@@ -76,7 +75,7 @@ def Greedy():
         collected = node_now[4]
         collected_int = int(collected,2)
         #print(collected)
-        visited[x][y][collected_int] = 1
+        #visited[x][y][collected_int] = 1
         goal_here = copy.deepcopy(goals)
         heu_now = heuristic([x,y],goals)
         #print(goal_here)
@@ -221,27 +220,6 @@ def Greedy():
         expanded += 1
         explored += 1
 
-def setupGraph ():
-    import itertools
-    import copy
-    import read_maze
-    maze, visited, unavaiable, start, goal, rows, columns = read_maze.generate_maze()
-    goal.append(start)
-    print(len(goal))
-    paths = []
-    costs = []
-    pair = []
-    csgraph = [[0 for x in range(N)] for y in range(N)]
-    for first, second in itertools.combinations(goal,2):
-        visited1= copy.deepcopy(visited)
-        maze1 = copy.deepcopy(maze)
-        unavaiable1 = copy.deepcopy(unavaiable)
-        (maze1,cost,curridx,path) = Astar3(maze1,visited1,unavaiable1,first,second,rows,columns)
-        paths.append(path)
-        pair.append([first,second])
-        costs.append(cost)
-    print(len(costs))
-    return(costs)
 
 def main():
     Greedy()
