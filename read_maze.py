@@ -14,7 +14,7 @@ def mazeinput (maze,filename):
 
 def generate_maze():
     maze =[]
-    mazeinput(maze,"tinySearch.txt")
+    mazeinput(maze,"bigDots.txt")
     [rows,columns] = np.shape(maze)
     unavaiable = [[0 for x in range(columns)] for y in range(rows)] # unavaible = 1 means there is a wall in that position
     goal = []
@@ -26,7 +26,7 @@ def generate_maze():
                 start = [i,j]
             if maze[i][j] == '.':
                 goal.append([i,j])
-    visited = [[[0 for x in range(2**len(goal))] for y in range(columns)]  for z in range(rows)] # visited = 1 means the place has been visited
-    #visited = []
+    #visited = [[[0 for x in range(2**len(goal))] for y in range(columns)]  for z in range(rows)] # visited = 1 means the place has been visited
+    visited = []
     #visited = [[0 for x in range(columns)] for y in range(rows)]
     return maze,visited,unavaiable,start,goal,rows,columns
