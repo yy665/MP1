@@ -47,7 +47,7 @@ def heuristic(x,goals):
 
 
 
-def Astar3():
+def Astar():
     import read_maze
     import copy
     maze,visited,unavaiable,start,goals,rows,columns = read_maze.generate_maze()
@@ -234,7 +234,7 @@ def setupGraph ():
  #  setupGraph()
 
 def main():
-    Astar3()
+    Astar()
 
 if __name__ == "__main__":
     main()

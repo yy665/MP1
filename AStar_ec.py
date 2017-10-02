@@ -10,7 +10,7 @@ import csv
 # direction definition:
 # 0: left 1: right 2: up 3: down
 
-def heuristic2(x,y):
+def heuristic2(x,y): # used to find shortest path between each point
     #y = goals[0]
     return(abs(y[0] - x[0]) + abs(y[1]-x[1]))
     #return ((y[0] - x[0])**2 + (y[1] - x[1])**2)
@@ -21,10 +21,13 @@ def heuristic2(x,y):
     # return sum
 
 def heuristic(x,goals,csgraph1,maze,visited,unavaiable,rows,columns):
+    # used to solve big Dots
+    # return the total length of MST multiplied by a constant
     import itertools
     import copy
     from scipy.sparse import csr_matrix
     from scipy.sparse.csgraph import minimum_spanning_tree
+    # Using MST as the heuristic
     allpoints = copy.deepcopy(goals)
     allpoints.append(x)
     #allpoints = [a for a in allpoints if a!= [-2,-2]]
@@ -56,12 +59,12 @@ def Astar_forbig():
     import read_maze
     import copy
     (csgraph,pairs,costs,paths,maze,visited,unavaiable,start,goals,rows,columns) = setupGraph()
+    # make this a TSP problem
 
     points = len(goals)
     print(points)
     print(start,goals)
     prev = [-1   for y in range(points+1)]   # record all the history
-    print("prev done")
     collected = '0' * points # collected is a vector that contains which dots have been collected
     #print(collected)
     #collected_int = int(collected,2) # collected_int is the index of what the 3rd dimension value is
@@ -128,7 +131,7 @@ def Astar_forbig():
                     print(r)
                     writer.writerow(r)
             return
-        # loop over all possible nodes
+        # loop over all possible nodes (all nodes are goals here)
         for want in goal_here:
             if want != [-2,-2]:
                 idx = goal_here.index(want)
@@ -162,7 +165,7 @@ def Astar_forbig():
 
         expanded += 1
 
-def Astar2(maze,visited,unavaiable,start,goal,rows,columns):
+def Astar2(maze,visited,unavaiable,start,goal,rows,columns): # used to find the shortest path between each node
 
     #print(start,goal)
     prev = [[[-1, -1] for x in range(columns)] for y in range(rows)]  # record all the history
@@ -230,7 +233,7 @@ def Astar2(maze,visited,unavaiable,start,goal,rows,columns):
         explored += 1
 
 
-def setupGraph ():
+def setupGraph (): # set up the problem as a TSP
     import itertools
     import copy
     import read_maze
