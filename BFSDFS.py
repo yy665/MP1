@@ -52,7 +52,7 @@ def DFS():
             goalnames.extend(['u','v','w','x','y','z'])
             goalnames.extend(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W'])
             goalnames.extend(['X','Y','Z'])
-            goalcounter = 1
+            goalcounter = 2
 
             while ([pos_now,collected_int] != [start,0] ):
                 path.append(pos_now)
@@ -209,7 +209,7 @@ def BFS():
             goalnames.extend(['u','v','w','x','y','z'])
             goalnames.extend(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W'])
             goalnames.extend(['X','Y','Z'])
-            goalcounter = 1
+            goalcounter = 2
             while ([pos_now,collected_int] != [start,0] ):
                 path.append(pos_now)
                 print(pos_now)
