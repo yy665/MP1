@@ -39,11 +39,24 @@ def BFS():
             print(expanded)
             pos_now = [x,y]
 
+            goalnames = ['0','1','2','3','4','5','6','7','8','9']
+            goalnames.extend(['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t'])
+            goalnames.extend(['u','v','w','x','y','z'])
+            goalnames.extend(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W'])
+            goalnames.extend(['X','Y','Z'])
+            goalcounter = 1
             while ([pos_now,collected_int] != [start,0] ):
                 path.append(pos_now)
+                print(pos_now)
                 (pos_now,collected_int) = ([prev[pos_now[0]][pos_now[1]][collected_int][0],prev[pos_now[0]][pos_now[1]][collected_int][1]], prev[pos_now[0]][pos_now[1]][collected_int][2])
                 #print(pos_now)
-                maze[pos_now[0]][pos_now[1]] = '.'
+                if pos_now in goals:
+                    if not maze[pos_now[0]][pos_now[1]] in goalnames:
+                        maze[pos_now[0]][pos_now[1]] = goalnames[points-goalcounter]
+                        goalcounter += 1
+                else:
+                    if points == 1:
+                        maze[pos_now[0]][pos_now[1]] = '.'
             maze[start[0]][start[1]] = "P"
             path.reverse()
             print(path)

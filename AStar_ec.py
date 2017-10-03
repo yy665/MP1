@@ -51,7 +51,7 @@ def heuristic(x,goals,csgraph1,maze,visited,unavaiable,rows,columns):
         for col in range(len(tree[0])):
             sum = sum + tree[row][col]
     #print("sum" + str(sum))
-    return 100*sum
+    return 2*sum
 
 
 
