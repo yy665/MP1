@@ -78,7 +78,7 @@ def Astar():
         collected = node_now[4]
         collected_int = int(collected,2)
         #print(collected)
-        visited[x][y][collected_int] = 1
+        #visited[x][y][collected_int] = 1
         goal_here = copy.deepcopy(goals)
         #print(goal_here)
         for i in range(points):

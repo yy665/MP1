@@ -61,7 +61,8 @@ def DFS():
                 #print(pos_now)
                 if pos_now in goals:
                     if not maze[pos_now[0]][pos_now[1]] in goalnames:
-                        maze[pos_now[0]][pos_now[1]] = goalnames[points-goalcounter]
+
+                        maze[pos_now[0]][pos_now[1]] = goalnames[points-goalcounter-1]
                         goalcounter += 1
                 else:
                     if points == 1:
@@ -217,7 +218,7 @@ def BFS():
                 #print(pos_now)
                 if pos_now in goals:
                     if not maze[pos_now[0]][pos_now[1]] in goalnames:
-                        maze[pos_now[0]][pos_now[1]] = goalnames[points-goalcounter]
+                        maze[pos_now[0]][pos_now[1]] = goalnames[points-goalcounter-1]
                         goalcounter += 1
                 else:
                     if points == 1:
